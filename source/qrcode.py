@@ -1,8 +1,9 @@
-import const
-import algorithm
 import sys
 from PIL import Image, ImageDraw
-from draw import draw
+
+from source.Matrix.draw import draw
+from source.Constants import const
+from source.Encoding import algorithm
 
 
 class QRCode:

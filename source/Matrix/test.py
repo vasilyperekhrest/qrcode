@@ -1,4 +1,4 @@
-from point import Point
+from source.Point.point import Point
 
 
 def first_rule(matrix: list[list[Point]]) -> int:

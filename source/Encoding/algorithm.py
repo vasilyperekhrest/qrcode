@@ -1,7 +1,7 @@
 import sys
 import re
-import tables
-from qrcode import const
+
+from source.Constants import tables, const
 
 
 def digital_coding(string: str) -> str:

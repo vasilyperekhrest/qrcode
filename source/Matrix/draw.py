@@ -1,8 +1,9 @@
 from itertools import product
 from typing import Callable
-from algorithm import tables, const
-from point import Point
-from tests import test
+
+from source.Constants import tables, const
+from source.Point.point import Point
+from source.Matrix.test import test
 
 
 def search_patterns(matrix: list[list[Point]], x: int, y: int) -> None:
