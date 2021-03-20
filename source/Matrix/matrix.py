@@ -1,9 +1,9 @@
 from itertools import product
 from typing import Callable
 
-from source.Constants import tables, const
 from source.Point.point import Point
-from source.Matrix.test import test
+from source.Constants import tables, const
+from source.Matrix import tests
 
 
 def search_patterns(matrix: list[list[Point]], x: int, y: int) -> None:
@@ -275,7 +275,7 @@ def fill_data(
                         flag = True
 
 
-def draw(
+def create(
     comb_blocks: list[list[int]],
     version: int,
     correction_level: int
@@ -326,7 +326,8 @@ def draw(
         func_mask = func_mask_table.get(num)
         fill_data(matrix, comb_blocks, func_mask)
 
-        scores[test(matrix)] = num
+        score = tests.make(matrix)
+        scores[score] = num
 
     min_score = min(scores.keys())
     num_mask = scores.get(min_score)

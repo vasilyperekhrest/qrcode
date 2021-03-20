@@ -1,7 +1,7 @@
 import sys
 from PIL import Image, ImageDraw
 
-from source.Matrix.draw import draw
+from source.Matrix import matrix
 from source.Constants import const
 from source.Encoding import algorithm
 
@@ -108,7 +108,7 @@ class QRCode:
             corr_blocks
         )
 
-        self.matrix = draw(
+        self.matrix = matrix.create(
             self.combined_block,
             self.version,
             self.correction_level

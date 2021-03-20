@@ -2,8 +2,8 @@ from source import qrcode
 
 
 def main() -> None:
-    qr = qrcode.QRCode(4, 8, qrcode.const.TYPE_BYTE, qrcode.const.LEVEL_H)
-    qr.add_data("Hello world! 💻")
+    qr = qrcode.QRCode(2, 8, qrcode.const.TYPE_BYTE, qrcode.const.LEVEL_M)
+    qr.add_data("🔥 Generator qr-code 🦄")
     qr.make()
     qr.show()
 

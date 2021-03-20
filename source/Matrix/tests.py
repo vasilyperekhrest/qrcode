@@ -127,7 +127,7 @@ def fourth_rule(matrix: list[list[Point]]) -> int:
     return score
 
 
-def test(matrix: list[list[Point]]) -> int:
+def make(matrix: list[list[Point]]) -> int:
     """Mask testing.
 
     Args:
