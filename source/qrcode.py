@@ -136,36 +136,31 @@ class QRCode:
         """Show qr code on screen"""
         self.img.show()
 
-    def save(self, name="qrcode", path="", format="png") -> None:
+    def save(self, name="qrcode", format="png") -> None:
         """Save generated QR code
 
         Args:
             name (str, optional): File name. Defaults to "qrcode".
-            path (str, optional): File path. Defaults to "".
             format (str, optional): File extension. Defaults to "png".
         """
-        self.img.save(f'{path}{name}.{format}')
+        self.img.save(f'{name}.{format}')
 
-    def load_img(self, name, path="", alpa=True) -> None:
+    def load_img(self, name, alpa=True) -> None:
         """Upload an overlay picture
 
         Args:
             name ([type]): File name
-            path (str, optional): File path. Defaults to "".
             alpa (bool, optional): Alpha channel. Defaults to True.
         """
-        img = Image.open(path+name).convert("RGBA")
+        img = Image.open(name).convert("RGBA")
 
         area = int(self.size**2 * self.level_coff)
         side = int(area**0.5)
 
         wscale = img.width / img.height
-        width = round(wscale * side)
+        width = round(wscale * side) - 4
         scale = width / img.width
         height = round(scale * img.height)
-
-        width -= 5
-        height -= 5
 
         if width % 2 == 0:
             width -= 1
