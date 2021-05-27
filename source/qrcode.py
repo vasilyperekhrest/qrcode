@@ -1,5 +1,3 @@
-import sys
-
 from PIL import Image, ImageDraw
 
 from source.Matrix import matrix
@@ -52,7 +50,7 @@ class QRCode:
         self.combined_block = []
         self.matrix = []
         self.size_matrix = 0
-        self.img = Image.new('RGBA', (1, 1), "white")
+        self.img = Image.new('RGBA', (1, 1), "#6A5ACD")
 
         # check
         if correction_level == const.LEVEL_L:
@@ -64,8 +62,7 @@ class QRCode:
         elif correction_level == const.LEVEL_H:
             self.level_coff = 0.3
         else:
-            print("Error! Incorrect correction level entered.")
-            sys.exit()
+            raise Exception("Error! Incorrect correction level entered.")
 
     def add_data(self, data: str) -> None:
         """Method for adding data to encoding.
@@ -75,7 +72,13 @@ class QRCode:
         """
         self.data = data
 
-    def make(self) -> None:
+    def make(
+            self,
+            pixel_type: str = "rectangle",
+            pixel_color: str = "black",
+            bg_color: str = "white",
+            with_outline: bool = True
+    ) -> None:
         """Method performing QR code generation."""
         self.combined_block, self.version = encode.encode(
             self.data,
@@ -90,50 +93,80 @@ class QRCode:
         )
         self.size_matrix = len(self.matrix)
 
-        self.img = Image.Image.resize(
-            self.img,
+        self.img = Image.new(
+            'RGBA',
             ((self.size_matrix + 2 * self.border) * self.step,
-             (self.size_matrix + 2 * self.border) * self.step)
+             (self.size_matrix + 2 * self.border) * self.step),
+            bg_color
         )
+
+        if with_outline:
+            outline_color = pixel_color
+        else:
+            outline_color = bg_color
 
         for i in range(self.size_matrix):
             for j in range(self.size_matrix):
-                if self.matrix[j][i].bit == 1:
+                if self.matrix[j][i].bit and self.matrix[j][i].is_pattern:
                     ImageDraw.Draw(self.img).rectangle(
-                        ((i + self.border)*self.step,
-                         (j + self.border)*self.step,
-                         (i + self.border)*self.step + self.step,
-                         (j + self.border)*self.step + self.step),
-                        fill='black'
+                        ((i + self.border) * self.step,
+                         (j + self.border) * self.step,
+                         (i + self.border) * self.step + self.step,
+                         (j + self.border) * self.step + self.step),
+                        fill=pixel_color
                     )
+
+                elif self.matrix[j][i].bit and not self.matrix[j][i].is_pattern:
+                    if pixel_type == "rectangle":
+                        ImageDraw.Draw(self.img).rectangle(
+                            ((i + self.border) * self.step,
+                             (j + self.border) * self.step,
+                             (i + self.border) * self.step + self.step,
+                             (j + self.border) * self.step + self.step),
+                            fill=pixel_color,
+                            outline=outline_color
+                        )
+
+                    elif pixel_type == "ellipse":
+                        ImageDraw.Draw(self.img).ellipse(
+                            ((i + self.border) * self.step,
+                             (j + self.border) * self.step,
+                             (i + self.border) * self.step + self.step,
+                             (j + self.border) * self.step + self.step),
+                            fill=pixel_color,
+                            outline=outline_color
+                        )
+
+                    else:
+                        raise Exception("Error! Check pixel_type!")
 
     def show(self) -> None:
         """Show qr code on screen"""
         self.img.show()
 
-    def save(self, name="qrcode", format="png") -> None:
+    def save(self, name="qrcode", file_format="png") -> None:
         """Save generated QR code
 
         Args:
             name (str, optional): File name. Defaults to "qrcode".
-            format (str, optional): File extension. Defaults to "png".
+            file_format (str, optional): File extension. Defaults to "png".
         """
-        self.img.save(f'{name}.{format}')
+        self.img.save(f'{name}.{file_format}')
 
-    def load_img(self, name, alpa=True) -> None:
+    def load_img(self, name, alpha=True) -> None:
         """Upload an overlay picture
 
         Args:
             name ([type]): File name
-            alpa (bool, optional): Alpha channel. Defaults to True.
+            alpha (bool, optional): Alpha channel. Defaults to True.
         """
         img = Image.open(name).convert("RGBA")
 
         area = int(self.size_matrix ** 2 * self.level_coff)
         side = int(area**0.5)
 
-        wscale = img.width / img.height
-        width = round(wscale * side) - 4
+        w_scale = img.width / img.height
+        width = round(w_scale * side) - 4
         scale = width / img.width
         height = round(scale * img.height)
 
@@ -147,7 +180,7 @@ class QRCode:
 
         img = img.resize((width, height), Image.ANTIALIAS)
 
-        if alpa:
+        if alpha:
             bg = img
         else:
             bg = Image.new('RGBA', img.size_matrix, 'white')

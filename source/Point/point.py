@@ -1,11 +1,16 @@
 class Point:
-    def __init__(self, bit=0, check=False) -> None:
+    def __init__(
+            self,
+            bit: bool = False,
+            is_service_bit: bool = False,
+            is_pattern: bool = False
+    ) -> None:
         """Class for describing points of a qr code matrix.
 
         Args:
-            bit (int, optional): Bit value (1 or 0). Defaults to 0.
-            check (bool, optional): Position value (busy or not).Defaults
-            to False.
+            bit: Bit value (1 or 0). Defaults to 0 (False).
+            is_service_bit: Is it a service beat or not.
         """
         self.bit = bit
-        self.check = check
+        self.is_service_bit = is_service_bit
+        self.is_pattern = is_pattern

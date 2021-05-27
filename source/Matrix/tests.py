@@ -74,7 +74,7 @@ def second_rule(matrix: list[list[Point]]) -> int:
 
 
 def third_rule(matrix: list[list[Point]]) -> int:
-    """Rule 3. For each sequence of BWBBBWB modules, with 4 white modules
+    """Rule 3. For each sequence of 'BWBBBWB' modules, with 4 white modules
     on one side, 40 points are added.
 
     Args:
@@ -116,7 +116,6 @@ def fourth_rule(matrix: list[list[Point]]) -> int:
     Returns:
         int: Number of points.
     """
-    score = 0
     size = len(matrix)
 
     black = sum(matrix[i][j].bit for i in range(size) for j in range(size))

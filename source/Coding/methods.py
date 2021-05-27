@@ -1,3 +1,6 @@
+"""
+This module contains functions that are needed to encode data (strings).
+"""
 import sys
 
 import re
@@ -9,10 +12,10 @@ def digital_coding(string: str) -> str:
     """Digital coding. This type of encoding requires 10 bits per 3 characters.
 
     Args:
-        string (str): String consisting of numbers.
+        string: String consisting of numbers.
 
     Returns:
-        str: Encoded binary string.
+        Encoded binary string.
     """
     if re.match(r"^\d+$", string) is None:
         print("Error! For digital coding, only numbers are allowed!")
@@ -39,11 +42,10 @@ def alphanumeric_coding(string: str) -> str:
     per 2 characters.
 
     Args:
-        string (str): A string consisting of numbers, Latin characters and
-        some others.
+        string: A string consisting of numbers, Latin characters and some others.
 
     Returns:
-        str: Encoded binary string.
+        Encoded binary string.
     """
     alphanum_table = tables.alphanumeric_table()
 
@@ -73,10 +75,10 @@ def byte_coding(string: str) -> str:
     """Byte encoding. The data is encoded in UTF-8 encoding.
 
     Args:
-        string (str): A string consisting of any characters.
+        string: A string consisting of any characters.
 
     Returns:
-        str: Encoded binary string.
+        Encoded binary string.
     """
     byte_list = []
     for byte in bytearray(string, 'utf-8'):
@@ -90,11 +92,11 @@ def data_encoding(string: str, encoding_type: int) -> str:
     """A function that calls a specific encoding method.
 
     Args:
-        string (str): The string to be encoded.
-        encoding_type (int): Coding type.
+        string: The string to be encoded.
+        encoding_type: Coding type.
 
     Returns:
-        str: Encoded binary string.
+        Encoded binary string.
     """
     if encoding_type == const.TYPE_DIGIT:
         return digital_coding(string)
@@ -106,8 +108,7 @@ def data_encoding(string: str, encoding_type: int) -> str:
         return alphanumeric_coding(string)
 
     else:
-        print("Error! Invalid encoding type entered!")
-        sys.exit()
+        raise Exception("Error! Invalid encoding type entered!")
 
 
 def service_fields(
@@ -116,17 +117,16 @@ def service_fields(
     correction_level: int,
     symbol_amount: int
 ) -> tuple[int, str]:
-    """Determining the version, maximum block length and adding
-    service information.
+    """Determining the version, maximum block length and adding service information.
 
     Args:
-        string (str): Encoded string.
-        encoding_type (int): Coding type.
-        correction_level (int): Correction level.
-        symbol_amount (int): The number of characters in the original string.
+        string: Encoded string.
+        encoding_type: Coding type.
+        correction_level: Correction level.
+        symbol_amount: The number of characters in the original string.
 
     Returns:
-        tuple[int, str]: Version, encoded string with service information.
+        Version, encoded string with service information.
     """
     if correction_level == const.LEVEL_L:
         bits_table = tables.bits_table_l()
@@ -139,6 +139,9 @@ def service_fields(
 
     elif correction_level == const.LEVEL_H:
         bits_table = tables.bits_table_h()
+
+    else:
+        raise Exception("Error! Incorrect correction level entered.")
 
     for i, bits in enumerate(bits_table.values()):
         if bits > len(string):
@@ -192,8 +195,7 @@ def service_fields(
                 service_string += "0100" + bin(number)[2::].zfill(16)
 
         else:
-            print("Error! Too much encoded data!")
-            sys.exit()
+            raise Exception("Error! Too much encoded data!")
 
         if len(string) + len(service_string) <= bits_amount:
             break
@@ -229,12 +231,12 @@ def division_into_blocks(
     """Splitting the encoded string into blocks.
 
     Args:
-        string (str): Encoded string with added service information.
-        version (int): Version QR-code.
-        correction_level (int): Correction level.
+        string: Encoded string with added service information.
+        version: Version QR-code.
+        correction_level: Correction level.
 
     Returns:
-        list[list[int]]: List consisting of lists - blocks of information.
+        List consisting of lists - blocks of information.
     """
     if correction_level == const.LEVEL_L:
         num_of_blocks = tables.blocks_table_l().get(version)
@@ -247,6 +249,9 @@ def division_into_blocks(
 
     elif correction_level == const.LEVEL_H:
         num_of_blocks = tables.blocks_table_h().get(version)
+
+    else:
+        raise Exception("Error! Incorrect correction level entered.")
 
     byte_amount = len(string) // 8
     block_size, num_of_add = divmod(byte_amount, num_of_blocks)
@@ -278,13 +283,12 @@ def creating_correction_bytes(
     """Creation of correction blocks.
 
     Args:
-        blocks (list[list[int]]): List consisting of lists - blocks of
-        information.
-        version (int): Version QR-code.
-        correction_level (int): Correction level.
+        blocks: List consisting of lists - blocks of information.
+        version: Version QR-code.
+        correction_level: Correction level.
 
     Returns:
-        list[list[int]]: List containing lists - correction blocks.
+        List containing lists - correction blocks.
     """
     if correction_level == const.LEVEL_L:
         num_corr_byte = tables.correction_byte_table_l().get(version)
@@ -297,6 +301,9 @@ def creating_correction_bytes(
 
     elif correction_level == const.LEVEL_H:
         num_corr_byte = tables.correction_byte_table_h().get(version)
+
+    else:
+        raise Exception("Error! Incorrect correction level entered.")
 
     gf_dict = tables.gf_table()
     gf_dict_rev = tables.gf_reversed_table()
@@ -326,16 +333,19 @@ def creating_correction_bytes(
 
 
 def combining_blocks(
-    blocks,
-    correction_blocks,
-):
+    blocks: list[list[int]],
+    correction_blocks: list[list[int]],
+) -> list[int]:
     """Function for combining data blocks and correction blocks.
 
     Args:
-        blocks (list[list[int]]): List consisting of lists - blocks of
+        blocks: List consisting of lists - blocks of
         information.
-        correction_blocks (list[list[int]]): List containing lists -
+        correction_blocks: List containing lists -
         correction blocks.
+
+    Returns:
+        A combined block that contains data from data blocks and correction blocks.
     """
     combined_block = []
     len_blocks = max([len(block) for block in blocks])
