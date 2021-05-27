@@ -1,4 +1,5 @@
 import sys
+
 import re
 
 from source.Constants import tables, const
@@ -90,7 +91,7 @@ def data_encoding(string: str, encoding_type: int) -> str:
 
     Args:
         string (str): The string to be encoded.
-        encoding_type (int): Encoding type.
+        encoding_type (int): Coding type.
 
     Returns:
         str: Encoded binary string.
@@ -120,7 +121,7 @@ def service_fields(
 
     Args:
         string (str): Encoded string.
-        encoding_type (int): Encoding type.
+        encoding_type (int): Coding type.
         correction_level (int): Correction level.
         symbol_amount (int): The number of characters in the original string.
 
@@ -325,20 +326,18 @@ def creating_correction_bytes(
 
 
 def combining_blocks(
-    combined_block: list[list[int]],
-    blocks: list[list[int]],
-    correction_blocks: list[list[int]]
-) -> None:
+    blocks,
+    correction_blocks,
+):
     """Function for combining data blocks and correction blocks.
 
     Args:
-        combined_block (list[list[int]]): A block that will be filled with
-        bytes from blocks with data and correction blocks.
         blocks (list[list[int]]): List consisting of lists - blocks of
         information.
         correction_blocks (list[list[int]]): List containing lists -
         correction blocks.
     """
+    combined_block = []
     len_blocks = max([len(block) for block in blocks])
     len_corr_blocks = max([len(block) for block in correction_blocks])
 
@@ -355,3 +354,5 @@ def combining_blocks(
                 combined_block.append(block[i])
             except IndexError:
                 pass
+
+    return combined_block

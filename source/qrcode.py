@@ -1,9 +1,10 @@
 import sys
+
 from PIL import Image, ImageDraw
 
 from source.Matrix import matrix
 from source.Constants import const
-from source.Encoding import algorithm
+from source.Coding import encode
 
 
 class QRCode:
@@ -23,7 +24,7 @@ class QRCode:
             step (int, optional): Single pixel size. Defaults to 8.
 
             encoding_type ([type], optional): Defaults to const.TYPE_BYTE.
-            Encoding type:
+            Coding type:
                 const.TYPE_BYTE == Byte encoding
 
                 const.TYPE_ALPHA == Alphanumeric coding
@@ -47,11 +48,10 @@ class QRCode:
         self.encoding_type = encoding_type
 
         self.data = ""
-        self.num_of_symbols = 0
         self.version = 0
         self.combined_block = []
         self.matrix = []
-        self.size = 0
+        self.size_matrix = 0
         self.img = Image.new('RGBA', (1, 1), "white")
 
         # check
@@ -74,38 +74,13 @@ class QRCode:
             data (str): The string to be encoded.
         """
         self.data = data
-        self.num_of_symbols = len(data)
 
     def make(self) -> None:
         """Method performing QR code generation."""
-        string = algorithm.data_encoding(
+        self.combined_block, self.version = encode.encode(
             self.data,
-            self.encoding_type
-        )
-
-        self.version, string = algorithm.service_fields(
-            string,
             self.encoding_type,
-            self.correction_level,
-            self.num_of_symbols
-        )
-
-        blocks = algorithm.division_into_blocks(
-            string,
-            self.version,
             self.correction_level
-        )
-
-        corr_blocks = algorithm.creating_correction_bytes(
-            blocks,
-            self.version,
-            self.correction_level
-        )
-
-        algorithm.combining_blocks(
-            self.combined_block,
-            blocks,
-            corr_blocks
         )
 
         self.matrix = matrix.create(
@@ -113,16 +88,16 @@ class QRCode:
             self.version,
             self.correction_level
         )
-        self.size = len(self.matrix)
+        self.size_matrix = len(self.matrix)
 
         self.img = Image.Image.resize(
             self.img,
-            ((self.size + 2*self.border)*self.step,
-             (self.size + 2*self.border)*self.step)
+            ((self.size_matrix + 2 * self.border) * self.step,
+             (self.size_matrix + 2 * self.border) * self.step)
         )
 
-        for i in range(self.size):
-            for j in range(self.size):
+        for i in range(self.size_matrix):
+            for j in range(self.size_matrix):
                 if self.matrix[j][i].bit == 1:
                     ImageDraw.Draw(self.img).rectangle(
                         ((i + self.border)*self.step,
@@ -154,7 +129,7 @@ class QRCode:
         """
         img = Image.open(name).convert("RGBA")
 
-        area = int(self.size**2 * self.level_coff)
+        area = int(self.size_matrix ** 2 * self.level_coff)
         side = int(area**0.5)
 
         wscale = img.width / img.height
@@ -175,10 +150,10 @@ class QRCode:
         if alpa:
             bg = img
         else:
-            bg = Image.new('RGBA', img.size, 'white')
+            bg = Image.new('RGBA', img.size_matrix, 'white')
             bg.paste(img, mask=img.split()[3])
 
-        pos_i = self.border*self.step + self.size*self.step//2 - width//2
-        pos_j = self.border*self.step + self.size*self.step//2 - height//2
+        pos_i = self.border * self.step + self.size_matrix * self.step // 2 - width // 2
+        pos_j = self.border * self.step + self.size_matrix * self.step // 2 - height // 2
 
         self.img.paste(bg, (pos_i, pos_j), bg.split()[3])
