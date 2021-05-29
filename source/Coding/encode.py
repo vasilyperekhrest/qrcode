@@ -1,9 +1,10 @@
 import source.Coding.methods as mt
 
 
-def encode(string_to_encode: str,
-           encoding_type: int,
-           correction_level: int
+def encode(
+        string_to_encode: str,
+        encoding_type: int,
+        correction_level: int
 ) -> tuple[list[int], int]:
     """A function for encoding data with a specified correction level and encoding type.
 

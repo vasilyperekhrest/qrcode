@@ -1,8 +1,9 @@
-from PIL import Image, ImageDraw
+from PIL import Image
 
 from source.Matrix import matrix
 from source.Constants import const
 from source.Coding import encode
+from source.Draw import qrDraw
 
 
 class QRCode:
@@ -77,7 +78,8 @@ class QRCode:
             pixel_type: str = "rectangle",
             pixel_color: str = "black",
             bg_color: str = "white",
-            with_outline: bool = True
+            with_outline: bool = True,
+            radius: int = None
     ) -> None:
         """Method performing QR code generation."""
         self.combined_block, self.version = encode.encode(
@@ -105,40 +107,55 @@ class QRCode:
         else:
             outline_color = bg_color
 
-        for i in range(self.size_matrix):
-            for j in range(self.size_matrix):
-                if self.matrix[j][i].bit and self.matrix[j][i].is_pattern:
-                    ImageDraw.Draw(self.img).rectangle(
-                        ((i + self.border) * self.step,
-                         (j + self.border) * self.step,
-                         (i + self.border) * self.step + self.step,
-                         (j + self.border) * self.step + self.step),
-                        fill=pixel_color
-                    )
+        if radius < 0 or radius > self.step//2:
+            raise Exception("The radius should be 0 < r < step // 2")
 
-                elif self.matrix[j][i].bit and not self.matrix[j][i].is_pattern:
-                    if pixel_type == "rectangle":
-                        ImageDraw.Draw(self.img).rectangle(
-                            ((i + self.border) * self.step,
-                             (j + self.border) * self.step,
-                             (i + self.border) * self.step + self.step,
-                             (j + self.border) * self.step + self.step),
-                            fill=pixel_color,
-                            outline=outline_color
-                        )
+        if pixel_type == "rectangle":
+            qrDraw.rectangle(
+                self.img,
+                self.matrix,
+                self.border,
+                self.step,
+                pixel_color,
+                outline_color
+            )
+        elif pixel_type == "circle":
+            qrDraw.circle(
+                self.img,
+                self.matrix,
+                self.border,
+                self.step,
+                pixel_color,
+                outline_color
+            )
+        elif pixel_type == "union":
+            if radius is None:
+                radius = self.step//2
+            qrDraw.union(
+                self.img,
+                self.matrix,
+                self.border,
+                self.step,
+                radius,
+                pixel_color,
+                bg_color,
+                pixel_color
+            )
+        elif pixel_type == "custom":
+            if radius is None:
+                radius = 0
+            qrDraw.custom(
+                self.img,
+                self.matrix,
+                self.border,
+                self.step,
+                radius,
+                pixel_color,
+                outline_color
+            )
 
-                    elif pixel_type == "ellipse":
-                        ImageDraw.Draw(self.img).ellipse(
-                            ((i + self.border) * self.step,
-                             (j + self.border) * self.step,
-                             (i + self.border) * self.step + self.step,
-                             (j + self.border) * self.step + self.step),
-                            fill=pixel_color,
-                            outline=outline_color
-                        )
-
-                    else:
-                        raise Exception("Error! Check pixel_type!")
+        else:
+            raise Exception("Error! Check pixel_type!")
 
     def show(self) -> None:
         """Show qr code on screen"""
