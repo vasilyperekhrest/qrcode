@@ -26,7 +26,7 @@ from source import qrcode
 
 qr = qrcode.QRCode(
     border=4,
-    step=60,
+    step=10,
     encoding_type=qrcode.const.TYPE_BYTE,
     correction_level=qrcode.const.LEVEL_H
 )
@@ -35,8 +35,8 @@ qr.make(
     pixel_type="custom",
     pixel_color="#4312AE",
     bg_color="#FFDB00",
-    with_outline=True,
-    radius=30
+    with_outline=False,
+    radius=3
 )
 qr.show()
 ```
