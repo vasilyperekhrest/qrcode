@@ -108,9 +108,9 @@ class QRCode:
             outline_color = bg_color
 
         if radius is None:
-            radius = self.border // 2
+            radius = self.step // 2
         elif radius < 0 or radius > self.step//2:
-            raise Exception("The radius should be 0 < r < step // 2")
+            raise Exception("The radius should be 0 <= r <= step // 2")
 
         if pixel_type == "rectangle":
             qrDraw.rectangle(
