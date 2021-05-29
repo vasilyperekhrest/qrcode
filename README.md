@@ -1,8 +1,8 @@
-#qrcode
+# qrcode
 
 Module for generating qr-code.
 
-##Usage
+## Usage
 
 To create a qr-code, you need to write the following code:
 
@@ -16,7 +16,7 @@ qr.make()
 qr.show()
 ```
 
-##Advanced
+## Advanced
 
 Also, you can customize the qr-code in detail:
 
@@ -43,11 +43,11 @@ qr.show()
 
 ![qrcode-image1](/Screenshots/qrcode-1.jpg)
 
-##Presets
+## Presets
 
 You can also use ready-made presets:
 
-###Rectangle
+### Rectangle
 
 ```python
 from source import qrcode
@@ -91,8 +91,29 @@ qr.make(
     with_outline=True,
 )
 qr.show()
-
 ```
 
 ![qrcode-image3](/Screenshots/qrcode-3.jpg)
 
+### Union
+
+```python
+from source import qrcode
+
+
+qr = qrcode.QRCode(
+    border=4,
+    step=10,
+    encoding_type=qrcode.const.TYPE_BYTE,
+    correction_level=qrcode.const.LEVEL_H
+)
+qr.add_data("🔥 QR-code generator 🦄")
+qr.make(
+    pixel_type="union",
+    pixel_color="#4312AE",
+    bg_color="#FFDB00"
+)
+qr.show()
+```
+
+![qrcode-image4](/Screenshots/qrcode-4.jpg)
