@@ -1,4 +1,4 @@
-from source import qrcode
+from qrcode import qrcode
 
 
 def main() -> None:

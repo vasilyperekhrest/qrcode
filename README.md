@@ -7,9 +7,8 @@ Module for generating qr-code.
 To create a qr-code, you need to write the following code:
 
 ```python
-from source import qrcode
+from qrcode import qrcode
 
-    
 qr = qrcode.QRCode()
 qr.add_data("🔥 QR-code generator 🦄")
 qr.make()
@@ -21,8 +20,7 @@ qr.show()
 Also, you can customize the qr-code in detail:
 
 ```python
-from source import qrcode
-
+from qrcode import qrcode
 
 qr = qrcode.QRCode(
     border=4,
@@ -50,8 +48,7 @@ You can also use ready-made presets:
 ### Rectangle
 
 ```python
-from source import qrcode
-
+from qrcode import qrcode
 
 qr = qrcode.QRCode(
     border=4,
@@ -74,8 +71,7 @@ qr.show()
 ### Circle
 
 ```python
-from source import qrcode
-
+from qrcode import qrcode
 
 qr = qrcode.QRCode(
     border=4,
@@ -98,8 +94,7 @@ qr.show()
 ### Union
 
 ```python
-from source import qrcode
-
+from qrcode import qrcode
 
 qr = qrcode.QRCode(
     border=4,

@@ -1,9 +1,9 @@
 from itertools import product
 from typing import Callable
 
-from source.Point.point import Point
-from source.Constants import tables, const
-from source.Matrix import tests
+from qrcode.Point.point import Point
+from qrcode.Constants import tables, const
+from qrcode.Matrix import tests
 
 
 def search_patterns(matrix: list[list[Point]], x: int, y: int) -> None:

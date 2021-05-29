@@ -1,4 +1,4 @@
-import source.Coding.methods as mt
+import qrcode.Coding.methods as mt
 
 
 def encode(

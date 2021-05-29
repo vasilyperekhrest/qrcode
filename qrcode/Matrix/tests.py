@@ -1,4 +1,4 @@
-from source.Point.point import Point
+from qrcode.Point.point import Point
 
 
 def first_rule(matrix: list[list[Point]]) -> int:

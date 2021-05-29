@@ -1,9 +1,9 @@
 from PIL import Image
 
-from source.Matrix import matrix
-from source.Constants import const
-from source.Coding import encode
-from source.Draw import qrDraw
+from qrcode.Matrix import matrix
+from qrcode.Constants import const
+from qrcode.Coding import encode
+from qrcode.Draw import qrDraw
 
 
 class QRCode:

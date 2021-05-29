@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw
 
-from source.Point.point import Point
+from qrcode.Point.point import Point
 
 
 def rectangle(
